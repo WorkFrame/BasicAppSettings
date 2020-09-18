@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<configuration>
+	<appSettings>
+		<!--   Benutzeranwendung und konfigurierte Eigenschafteneinstellungen hier einfuegen.-->
+		<!--   Beispiel: <add key="settingName" value="settingValue"/> -->
+		<add key="TestEinstellung" value="Test-Einstellung"/>
+		<add key="SearchDirectory" value="Test-SearchDirectory"/>
+	</appSettings>
+</configuration>
