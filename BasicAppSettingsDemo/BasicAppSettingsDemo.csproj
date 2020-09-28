@@ -6,27 +6,20 @@
   </Target>
   <PropertyGroup>
     <AssemblyRoot Condition="'$(Vishnu_Assemblies)'!=''">$(Vishnu_Assemblies)</AssemblyRoot>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>\\mausbaer5\Users\krakauer\BasicAppSettings.Install\</PublishUrl>
+    <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Unc</InstallFrom>
-    <UpdateEnabled>true</UpdateEnabled>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\mausbaer5\Users\krakauer\BasicAppSettings.Install\</InstallUrl>
-    <SupportUrl>https:\\neteti.de</SupportUrl>
-    <ErrorReportUrl>https:\\neteti.de</ErrorReportUrl>
-    <ProductName>BasicAppSettings</ProductName>
-    <PublisherName>Erik Nagel</PublisherName>
-    <SuiteName>NetEti</SuiteName>
-    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup>
@@ -84,23 +77,17 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>2D952B82F0C74CCB2B8F6159E292F86931268AC7</ManifestCertificateThumbprint>
