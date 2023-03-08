@@ -1,14 +1,8 @@
-﻿using System;
-using System.IO;
-using NetEti.ApplicationControl;
+﻿using NetEti.ApplicationControl;
 using NetEti.FileTools;
 using NetEti.Globals;
 using System.Diagnostics;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
-using System.Runtime.InteropServices;
-using Newtonsoft.Json;
 
 namespace NetEti.ApplicationEnvironment
 {
@@ -70,12 +64,12 @@ namespace NetEti.ApplicationEnvironment
         /// <summary>
         /// Pfad einer XML-Datei im Format der app.config mit User-spezifischen Einstellungen.
         /// </summary>
-        public string AppConfigUser { get; private set; }
+        public string? AppConfigUser { get; private set; }
 
         /// <summary>
         /// Info-Text  mit erweiterten Status-Informationen zum Ladeversuch der AppConfigUser.
         /// </summary>
-        public string AppConfigUserInfo { get; private set; }
+        public string? AppConfigUserInfo { get; private set; }
 
         /// <summary>
         /// True wenn eine XML-Datei im Format der app.config mit User-spezifischen Einstellungen
@@ -86,7 +80,7 @@ namespace NetEti.ApplicationEnvironment
         /// <summary>
         /// Das Verzeichnis, in dem die Applikation gestartet wurde als absoluter Pfad.
         /// </summary>
-        public string ApplicationRootPath { get; private set; }
+        public string? ApplicationRootPath { get; private set; }
 
         /// <summary>
         /// Wenn true, kann immer abgebrochen werden - zu Debug-Zwecken.<br></br>
@@ -104,12 +98,12 @@ namespace NetEti.ApplicationEnvironment
         /// Verzeichnis, in dem die Installationsdaten bei einer
         /// ClickOnce-Installation (EnvAccess:ISNETWORKDEPLOYED = true) liegen.
         /// </summary>
-        public string ClickOnceDataDirectory { get; set; }
+        public string? ClickOnceDataDirectory { get; set; }
 
         /// <summary>
         /// Connection-String für eine Datenbank-Verbindung.
         /// </summary>
-        public string ConnectionString { get; set; }
+        public string? ConnectionString { get; set; }
 
         /// <summary>
         /// Bei True wird das aktuell gesetzte WorkingDirectory angelegt, wenn es noch nicht existiert.<br></br>
@@ -121,7 +115,7 @@ namespace NetEti.ApplicationEnvironment
         /// Der angepasste Datenbank-Server Instanz-Name.<br></br>
         /// Default: = (local)<br></br>
         /// </summary>
-        public string DataSource { get; set; }
+        public string? DataSource { get; set; }
 
         /// <summary>
         /// Maximale Anzahl von archivierten Logs (DebugFiles, o.ä.).
@@ -147,7 +141,7 @@ namespace NetEti.ApplicationEnvironment
         ///  Filter, der die zu loggenden Zeilen begrenzt.
         ///  Default: "" - alles wird geloggt.
         /// </summary>
-        public string DebugFileRegexFilter { get; set; }
+        public string? DebugFileRegexFilter { get; set; }
 
         /// <summary>
         /// Die zu loggenden Informationsarten<br></br>
@@ -158,7 +152,7 @@ namespace NetEti.ApplicationEnvironment
         ///   (InfoType.ALL enthält alles außer den USERTYPEn).<br></br>
         /// </summary>
         /// <returns></returns>
-        public InfoType[] DebugInfo { get; set; }
+        public InfoType[]? DebugInfo { get; set; }
 
         /// <summary>
         ///  Bei True können Anwendungen Debug-Ausgaben erzeugen.
@@ -170,17 +164,17 @@ namespace NetEti.ApplicationEnvironment
         /// Die voreingestellte Datenbank.<br></br>
         /// Default: null<br></br>
         /// </summary>
-        public string DefaultDatabase { get; set; }
+        public string? DefaultDatabase { get; set; }
 
         /// <summary>
         /// Das Default-Verzeichnis für SQL-Server Datendateien
         /// </summary>
-        public string DefaultSqlDataDirectory { get; private set; }
+        public string? DefaultSqlDataDirectory { get; private set; }
 
         /// <summary>
         /// Das Default-Verzeichnis für die SQL-Server Logdateien
         /// </summary>
-        public string DefaultSqlLogDirectory { get; private set; }
+        public string? DefaultSqlLogDirectory { get; private set; }
 
         /// <summary>
         /// Bei true gibt BasicAppSettings über den InfoController am Ende der
@@ -244,18 +238,18 @@ namespace NetEti.ApplicationEnvironment
         /// <summary>
         /// Der Rechnername
         /// </summary>
-        public string MachineName { get; private set; }
+        public string? MachineName { get; private set; }
 
         /// <summary>
         /// Geforderte Mindestversion für spätere Prüfung gegen die ProgrammVersion.<br></br>
         /// Default: "1.0.0.0"
         /// </summary>
-        public string MinProgrammVersion { get; protected set; }
+        public string? MinProgrammVersion { get; protected set; }
 
         /// <summary>
         /// Die komplette Betriebssystem-Version
         /// </summary>
-        public string OSVersion { get; private set; }
+        public string? OSVersion { get; private set; }
 
         /// <summary>
         /// Numerische Haupt-Betriebssystem-Version<br></br>
@@ -271,17 +265,17 @@ namespace NetEti.ApplicationEnvironment
         /// <summary>
         /// Der Prozessortyp
         /// </summary>
-        public string Processor { get; private set; }
+        public string? Processor { get; private set; }
 
         /// <summary>
         /// Die Anzahl Prozessoren
         /// </summary>
-        public string ProcessorCount { get; private set; }
+        public string? ProcessorCount { get; private set; }
 
         /// <summary>
         /// Die aktuelle ProgrammVersion = Application.ProductVersion
         /// </summary>
-        public string ProgrammVersion { get; private set; }
+        public string? ProgrammVersion { get; private set; }
 
         /// <summary>
         /// Basis-Pfad, in dem in der Registry nach einer Einstellung gesucht wird.
@@ -290,7 +284,7 @@ namespace NetEti.ApplicationEnvironment
         /// Default für die intern eingestellte RegistryRoot ist "HKEY_LOCAL_MACHINE".
         /// Default: ""
         /// </summary>
-        public string RegistryBasePath
+        public string? RegistryBasePath
         {
             get
             {
@@ -306,7 +300,7 @@ namespace NetEti.ApplicationEnvironment
         /// Ein optionales Suchverzeichnis für verschiedene Zwecke.<br></br>
         /// Default: WorkingDirectory<br></br>
         /// </summary>
-        public string SearchDirectory { get; set; }
+        public string? SearchDirectory { get; set; }
 
         /// <summary>
         /// Bei true kann die Applikation nur einmal gestartet werden.<br></br>
@@ -318,14 +312,14 @@ namespace NetEti.ApplicationEnvironment
         /// Pfad und Name des Statistics-Logfiles<br></br>
         /// Default: WorkingDirectory + \ + ApplicationName + .stat<br></br>
         /// </summary>
-        public string StatisticsFile { get; set; }
+        public string? StatisticsFile { get; set; }
 
         /// <summary>
         ///  Filter, der die zu loggenden Zeilen begrenzt.
         ///  Default: "" - alles wird geloggt.
         ///  z.B.: @"(?:_NOPPES_)" - Nichts wird geloggt, bzw. nur Zeilen, die "_NOPPES_" enthalten
         /// </summary>
-        public string StatisticsFileRegexFilter { get; set; }
+        public string? StatisticsFileRegexFilter { get; set; }
 
         /// <summary>
         /// Environment: "TEMP"
@@ -335,12 +329,12 @@ namespace NetEti.ApplicationEnvironment
         /// <summary>
         /// Der Windows-Domain-Name
         /// </summary>
-        public string UserDomainName { get; private set; }
+        public string? UserDomainName { get; private set; }
 
         /// <summary>
         /// Der Windows-Username
         /// </summary>
-        public string UserName { get; private set; }
+        public string? UserName { get; private set; }
 
         /// <summary>
         /// Das Arbeitsverzeichnis<br></br>
@@ -352,7 +346,7 @@ namespace NetEti.ApplicationEnvironment
         {
             get
             {
-                return this._workingDirectory;
+                return this._workingDirectory ?? ".";
             }
             set
             {
@@ -369,7 +363,7 @@ namespace NetEti.ApplicationEnvironment
                         {
                             try
                             {
-                                string newRoot = this.DirectoryCreate(Path.GetDirectoryName(newWorkingDirectory));
+                                string? newRoot = this.DirectoryCreate(Path.GetDirectoryName(newWorkingDirectory) ?? "");
                                 if (Directory.Exists(newWorkingDirectory))
                                 {
                                     newWorkingDirectory = Path.Combine(newWorkingDirectory, Guid.NewGuid().ToString());
@@ -443,9 +437,9 @@ namespace NetEti.ApplicationEnvironment
         /// <exception cref="PathTooLongException" />
         /// <exception cref="DirectoryNotFoundException" />
         /// <exception cref="NotSupportedException" />
-        protected string DirectoryCreate(string directoryToCreate)
+        protected string? DirectoryCreate(string directoryToCreate)
         {
-            string createdDirectoryRoot = null;
+            string? createdDirectoryRoot = null;
             if (!Directory.Exists(directoryToCreate))
             {
             	  createdDirectoryRoot = directoryToCreate;
@@ -486,7 +480,7 @@ namespace NetEti.ApplicationEnvironment
         /// <param name="key">Der Zugriffsschlüssel (string)</param>
         /// <param name="defaultValue">Das default-Ergebnis (string)</param>
         /// <returns>Der Ergebnis-String</returns>
-        public string GetStringValue(string key, string defaultValue)
+        public string? GetStringValue(string key, string? defaultValue)
         {
             return this.AppEnvAccessor.GetStringValue(key, defaultValue);
         }
@@ -498,7 +492,7 @@ namespace NetEti.ApplicationEnvironment
         /// <param name="key">Der Zugriffsschlüssel (string)</param>
         /// <param name="defaultValues">Das default-Ergebnis (string[])</param>
         /// <returns>Das Ergebnis-String-Array</returns>
-        public string[] GetStringValues(string key, string[] defaultValues)
+        public string?[]? GetStringValues(string key, string?[]? defaultValues)
         {
             return this.AppEnvAccessor.GetStringValues(key, defaultValues);
         }
@@ -533,7 +527,7 @@ namespace NetEti.ApplicationEnvironment
         /// <param name="defaultValue">Das default-Ergebnis vom Typ T</param>
         /// <returns>Wert zum key in den Rückgabe-Typ gecastet</returns>
         /// <exception cref="InvalidCastException">Typecast-Fehler</exception>
-        public T GetValue<T>(string key, T defaultValue)
+        public T? GetValue<T>(string key, T? defaultValue)
         {
             return this.AppEnvAccessor.GetValue<T>(key, defaultValue);
         }
@@ -550,7 +544,7 @@ namespace NetEti.ApplicationEnvironment
         /// <param name="defaultValues">Das default-Ergebnis vom Typ T[]</param>
         /// <returns>Wert-Array zum key in den Rückgabe-Typ gecastet</returns>
         /// <exception cref="InvalidCastException">Typecast-Fehler</exception>
-        public T[] GetValues<T>(string key, T[] defaultValues)
+        public T?[]? GetValues<T>(string key, T?[]? defaultValues)
         {
             return this.AppEnvAccessor.GetValues<T>(key, defaultValues);
         }
@@ -605,7 +599,7 @@ namespace NetEti.ApplicationEnvironment
                             SortedDictionary<string, Assembly> assemblies = this.GetLoadedAssemblies();
                             foreach (string assemblyName in assemblies.Keys)
                             {
-                                string assemblyLocation = null;
+                                string? assemblyLocation = null;
                                 try
                                 {
                                     assemblyLocation = assemblies[assemblyName].Location;
@@ -615,7 +609,7 @@ namespace NetEti.ApplicationEnvironment
                                 {
                                     try
                                     {
-                                        assemblyLocation = assemblies[assemblyName].CodeBase;
+                                        assemblyLocation = assemblies[assemblyName].Location;
                                     }
                                     catch { }
                                 }
@@ -683,7 +677,7 @@ namespace NetEti.ApplicationEnvironment
             foreach (Assembly assembly in rawAssemblies)
             {
                 int multipleLoadedIndex = 0;
-                string assemblyFullName = assembly.FullName;
+                string assemblyFullName = assembly.FullName ?? "";
                 while (assemblies.ContainsKey(assemblyFullName) && multipleLoadedIndex < 9)
                 {
                     multipleLoadedIndex++;
@@ -704,49 +698,29 @@ namespace NetEti.ApplicationEnvironment
         /// </summary>
         protected BasicAppSettings()
         {
-            this.IsFullFramework = RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework",
-            StringComparison.OrdinalIgnoreCase);
-            this.IsNetNative = RuntimeInformation.FrameworkDescription.StartsWith(".NET Native",
-                StringComparison.OrdinalIgnoreCase);
-            this.IsNetCore = RuntimeInformation.FrameworkDescription.StartsWith(".NET Core",
-                StringComparison.OrdinalIgnoreCase);
+            // this.IsFullFramework = RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework",
+            // StringComparison.OrdinalIgnoreCase);
+            // this.IsNetNative = RuntimeInformation.FrameworkDescription.StartsWith(".NET Native",
+            //     StringComparison.OrdinalIgnoreCase);
+            // this.IsNetCore = RuntimeInformation.FrameworkDescription.StartsWith(".NET Core",
+            //     StringComparison.OrdinalIgnoreCase);
 
             this.AppEnvAccessor = new AppEnvReader();
 
-            if (this.IsFullFramework)
-            {
-                this.CommandLineAccessor = new CommandLineAccess();
-                this.SettingsAccessor = new SettingsAccess();
-            }
-            else
-            {
-                if (this.IsNetCore)
-                {
-                    using (var r = new StreamReader(@"appsettings.json"))
-                    {
-                        var json = r.ReadToEnd();
-                        var items = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-                        foreach (var keyValuePair in items)
-                        {
-                            if (keyValuePair.Key == "AppConfigUser")
-                            {
-                                this.AppEnvAccessor.RegisterKeyValue(keyValuePair.Key, keyValuePair.Value.ToString());
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+            this.CommandLineAccessor = new CommandLineAccess();
+            this.SettingsAccessor = new SettingsAccess();
             this.EnvAccessor = new EnvAccess();
             this.RegAccessor = new RegAccess();
 
-            if (this.IsFullFramework)
-            {
-                this.AppEnvAccessor.RegisterStringValueGetter(this.CommandLineAccessor);
-                this.AppEnvAccessor.RegisterStringValueGetter(this.SettingsAccessor);
-            }
+            this.AppEnvAccessor.RegisterStringValueGetter(this.CommandLineAccessor);
+            this.AppEnvAccessor.RegisterStringValueGetter(this.SettingsAccessor);
             this.AppEnvAccessor.RegisterStringValueGetter(this.EnvAccessor);
             this.AppEnvAccessor.RegisterStringValueGetter(this.RegAccessor);
+
+            this._workingDirectory = ".";
+            this.TempDirectory= ".";
+            this.ApplicationName = "NetEti.BasicAppSettings;";
+            this.DebugFile = this.ApplicationName + ".log";
 
             this.LoadSettings();
         }
@@ -758,9 +732,12 @@ namespace NetEti.ApplicationEnvironment
         /// </summary>
         /// <param name="registryBasePath">Pfad zum Registry-Key, unterhalb dessen zukünftige Zugriffe erfolgen sollen.</param>
         /// <exception cref="ArgumentException">Wird ausgelöst, wenn der übergebene registryBasePath nicht in einen RegistryKey konvertierbar ist.</exception>
-        public void SetRegistryBasePath(string registryBasePath)
+        public void SetRegistryBasePath(string? registryBasePath)
         {
-            this.RegAccessor.SetRegistryBasePath(registryBasePath);
+            if (registryBasePath != null)
+            {
+                this.RegAccessor.SetRegistryBasePath(registryBasePath);
+            }
         }
 
         /// <summary>
@@ -774,10 +751,20 @@ namespace NetEti.ApplicationEnvironment
                 this.UserSettingsAccessor = null;
             }
             this.AppConfigUserLoaded = false;
-            this.TempDirectory = this.GetStringValue("TEMP", "");
-            this.ApplicationName = this.GetStringValue("PRODUCTNAME", "");
+            string? newTempDirectory = this.GetStringValue("TEMP", "");
+            if (newTempDirectory != null)
+            {
+
+                this.TempDirectory = newTempDirectory;
+            }
+            string? configuredApplicationName = this.GetStringValue("PRODUCTNAME", "");
+            if (configuredApplicationName != null)
+            {
+                this.ApplicationName = configuredApplicationName;
+            }
+            this.AppEnvAccessor.RegisterKeyValue("ApplicationName", this.ApplicationName);
             string defaultAppConfigUser =
-                Path.Combine(Path.GetDirectoryName(this.TempDirectory),
+                Path.Combine(Path.GetDirectoryName(this.TempDirectory) ?? "",
                     this.ApplicationName, String.Format($"{this.ApplicationName}.exe.config.user"));
             this.AppConfigUser = this.GetStringValue("AppConfigUser", defaultAppConfigUser);
             if (!String.IsNullOrEmpty(this.AppConfigUser))
@@ -809,29 +796,26 @@ namespace NetEti.ApplicationEnvironment
                 this.AppConfigUserInfo = "Es wurde keine AppConfigUser konfiguriert.";
             }
             this.RegistryBasePath = this.AppEnvAccessor.GetStringValue("RegistryBasePath", "");
-            this.ApplicationName = this.GetStringValue("PRODUCTNAME", "");
-            this.AppEnvAccessor.RegisterKeyValue("ApplicationName", this.ApplicationName);
-
             this.SingleInstance = Convert.ToBoolean(this.GetStringValue("SingleInstance", "true"),
                                                     System.Globalization.CultureInfo.CurrentCulture);
-            this.MachineName = this.GetStringValue("MACHINENAME", "");
+            this.MachineName = this.GetStringValue("MACHINENAME", "") ?? "unknown";
             this.AppEnvAccessor.RegisterKeyValue("MACHINENAME", this.MachineName);
             this.Processor = this.GetStringValue("PROCESSOR_ARCHITECTURE", "");
             this.ProcessorCount = this.GetStringValue("PROCESSORCOUNT", "1");
             this.UserDomainName = this.GetStringValue("USERDOMAINNAME", "");
-            this.UserName = this.GetStringValue("USERNAME", "");
+            this.UserName = this.GetStringValue("USERNAME", "") ?? "unknown";
             this.AppEnvAccessor.RegisterKeyValue("USERNAME", this.UserName);
-            this.TempDirectory = this.GetStringValue("TEMP", "");
+            this.TempDirectory = this.GetStringValue("TEMP", "") ?? "";
             this.AppEnvAccessor.RegisterKeyValue("TempDirectory", this.TempDirectory);
             this.OSVersion = this.GetStringValue("OSVERSION", "");
             this.OSVersionMajor = Convert.ToInt16(this.GetStringValue("OSVERSIONMAJOR", "0"), System.Globalization.CultureInfo.CurrentCulture);
-            this.ApplicationRootPath = this.GetStringValue("APPLICATIONROOTPATH", "");
+            this.ApplicationRootPath = this.GetStringValue("APPLICATIONROOTPATH", "") ?? "";
             this.AppEnvAccessor.RegisterKeyValue("APPLICATIONROOTPATH", this.ApplicationRootPath);
             this.AppEnvAccessor.RegisterKeyValue("HOME", this.ApplicationRootPath);
             this.IsClickOnce = this.GetValue<bool>("ISNETWORKDEPLOYED", false);
             this.AppEnvAccessor.RegisterKeyValue("IsClickOnce", this.IsClickOnce.ToString());
             this.ClickOnceDataDirectory = this.GetStringValue("CLICKONCEDATA", null);
-            if (this.IsClickOnce)
+            if (this.IsClickOnce && this.ClickOnceDataDirectory != null)
             {
                 this.AppEnvAccessor.RegisterKeyValue("ClickOnceDataDirectory", this.ClickOnceDataDirectory);
             }
@@ -839,26 +823,38 @@ namespace NetEti.ApplicationEnvironment
             this.ProcessId = Process.GetCurrentProcess().Id;
             this.AppEnvAccessor.RegisterKeyValue("ProcessId", this.ProcessId.ToString());
             this.CreateWorkingDirectoryIfNotExists = Convert.ToBoolean(this.GetStringValue("CreateWorkingDirectoryIfNotExists", "true"));
+            string? newWorkingDirectory = null;
             if (this.SingleInstance)
             {
-                this.WorkingDirectory = this.GetStringValue("WorkingDirectory", Path.Combine(this.TempDirectory, this.ApplicationName)
-                  .TrimEnd(Path.DirectorySeparatorChar));
+                newWorkingDirectory
+                    = this.GetStringValue("WorkingDirectory", Path.Combine(this.TempDirectory, this.ApplicationName)
+                          .TrimEnd(Path.DirectorySeparatorChar));
             }
             else
             {
-                this.WorkingDirectory = this.GetStringValue("WorkingDirectory", Path.Combine(Path.Combine(this.TempDirectory, this.ApplicationName),
+                newWorkingDirectory
+                    = this.GetStringValue("WorkingDirectory", Path.Combine(Path.Combine(this.TempDirectory, this.ApplicationName),
                   this.ProcessId.ToString()).TrimEnd(Path.DirectorySeparatorChar));
+            }
+            if (newWorkingDirectory != null)
+            {
+                this.WorkingDirectory = newWorkingDirectory;
             }
             this.AppEnvAccessor.RegisterKeyValue("WorkingDirectory", this.WorkingDirectory);
             this.KillWorkingDirectoryAtShutdown = Convert.ToBoolean(this.GetStringValue("KillWorkingDirectoryAtShutdown", "true"));
-            this.SearchDirectory = this.GetStringValue("SearchDirectory", this.WorkingDirectory).TrimEnd(Path.DirectorySeparatorChar);
-            this.DebugFile = this.GetStringValue("DebugFile", this.WorkingDirectory + Path.DirectorySeparatorChar + this.ApplicationName + @".log");
+            this.SearchDirectory = this.GetStringValue("SearchDirectory", this.WorkingDirectory)?.TrimEnd(Path.DirectorySeparatorChar);
+            string? newDebugFile
+                = this.GetStringValue("DebugFile", this.WorkingDirectory + Path.DirectorySeparatorChar + this.ApplicationName + @".log");
+            if (newDebugFile != null)
+            {
+                this.DebugFile = newDebugFile;
+            }
             this.SetDebugArchivingInterval(this.GetStringValue("DebugArchivingInterval", "24:00:00"));
             this.DebugArchiveMaxCount = this.GetValue<int>("DebugArchiveMaxCount", 20);
             this.AppEnvAccessor.RegisterKeyValue("DebugFile", this.DebugFile);
-            string debugInfoString = this.GetStringValue("DebugInfo", "ALL");
-            this.AppEnvAccessor.RegisterKeyValue("DebugInfo", debugInfoString);
-            this.DebugInfo = InfoTypes.String2InfoTypeArray(debugInfoString);
+            string? debugInfoString = this.GetStringValue("DebugInfo", "ALL");
+            this.AppEnvAccessor.RegisterKeyValue("DebugInfo", debugInfoString ?? "ALL");
+            this.DebugInfo = InfoTypes.String2InfoTypeArray(debugInfoString ?? "ALL");
             this.DebugFileRegexFilter = this.GetStringValue("DebugFileRegexFilter", "");
             this.DebugMode = this.GetValue<bool>("DebugMode", false);
             this.StatisticsFile = this.GetStringValue("StatisticsFile", this.WorkingDirectory + Path.DirectorySeparatorChar + this.ApplicationName + @".stat");
@@ -883,7 +879,7 @@ namespace NetEti.ApplicationEnvironment
 
             this.SetDefaultSQLDirectories();
             this.DataSource = this.GetStringValue("DataSource", null);
-            this.AppEnvAccessor.RegisterKeyValue("DataSource", this.DataSource);
+            this.AppEnvAccessor.RegisterKeyValue("DataSource", this.DataSource ?? "unknown");
             this.DefaultDatabase = null;
             this.LogSql = Convert.ToBoolean(this.GetStringValue("LogSQL", "false"), System.Globalization.CultureInfo.CurrentCulture);
             this.AppEnvAccessor.RegisterKeyValue("LogSql", this.LogSql.ToString());
@@ -896,7 +892,7 @@ namespace NetEti.ApplicationEnvironment
         /// </summary>
         /// <param name="inString">Wildcard</param>
         /// <returns>Laufzeit-Ersetzung</returns>
-        public virtual string ReplaceWildcards(string inString)
+        public virtual string? ReplaceWildcards(string inString)
         {
             return this.GetStringValue("__NOPPES__", inString);
         }
@@ -924,7 +920,7 @@ namespace NetEti.ApplicationEnvironment
         /// <summary>
         /// Implementiert IGetStringValue für Zugriffe auf die app.config.user.
         /// </summary>
-        protected XmlAccess UserSettingsAccessor { get; private set; }
+        protected XmlAccess? UserSettingsAccessor { get; private set; }
 
         /// <summary>
         /// Implementiert IGetStringValue für Zugriffe auf das Environment.
@@ -941,7 +937,7 @@ namespace NetEti.ApplicationEnvironment
         /// "Directory.Create" neu angelegt wurde.
         /// Dieser 
         /// </summary>
-        protected string CreatedDirectoryRoot { get; set; }
+        protected string? CreatedDirectoryRoot { get; set; }
 
         /// <summary>
         /// Setzt die Default-Verzeichnisse für den Microsoft SQL Server.
@@ -953,19 +949,25 @@ namespace NetEti.ApplicationEnvironment
             this.DefaultSqlDataDirectory = null;
             this.DefaultSqlLogDirectory = null;
             // Liste der installierten Instanzen holen
-            string[] vals = this.GetStringValues(regsqlroot + @"\InstalledInstances", null);
+            string?[]? vals = this.GetStringValues(regsqlroot + @"\InstalledInstances", null);
             if ((vals != null) && (vals.Length > 0))
             {
                 // uns interessiert hier nur der letzte Eintrag, i.d.R. gibt es überhaupt nur einen
                 // - davon den Versions-spezifischen Registry-Pfad holen
-                string val = this.GetStringValue(regsqlroot + @"\Instance Names\SQL\" + vals[vals.Length - 1], null);
+                string? val = this.GetStringValue(regsqlroot + @"\Instance Names\SQL\" + vals[vals.Length - 1], null);
                 if (val != null)
                 {
                     string regSqlInstanceRoot = regsqlroot + @"\" + val + @"\MSSQLServer";
                     this.DefaultSqlDataDirectory = this.GetStringValue(regSqlInstanceRoot + @"\DefaultData", this.DefaultSqlDataDirectory)?.TrimEnd(Path.DirectorySeparatorChar);
-                    this.AppEnvAccessor.RegisterKeyValue("DefaultSqlDataDirectory", this.DefaultSqlDataDirectory);
+                    if (this.DefaultSqlDataDirectory != null)
+                    {
+                        this.AppEnvAccessor.RegisterKeyValue("DefaultSqlDataDirectory", this.DefaultSqlDataDirectory);
+                    }
                     this.DefaultSqlLogDirectory = this.GetStringValue(regSqlInstanceRoot + @"\DefaultLog", this.DefaultSqlLogDirectory)?.TrimEnd(Path.DirectorySeparatorChar);
-                    this.AppEnvAccessor.RegisterKeyValue("DefaultSqlLogDirectory", this.DefaultSqlLogDirectory);
+                    if (this.DefaultSqlLogDirectory != null)
+                    {
+                        this.AppEnvAccessor.RegisterKeyValue("DefaultSqlLogDirectory", this.DefaultSqlLogDirectory);
+                    }
                 }
             }
         }
@@ -980,7 +982,7 @@ namespace NetEti.ApplicationEnvironment
         // </summary>
         // private AppEnvReader _appEnvAccessor_reku;
 
-        private void SetDebugArchivingInterval(string timeSpanString)
+        private void SetDebugArchivingInterval(string? timeSpanString)
         {
             TimeSpan timeSpan;
             if (TimeSpan.TryParse(timeSpanString, out timeSpan))

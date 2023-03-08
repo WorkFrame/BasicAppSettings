@@ -13,6 +13,7 @@ namespace NetEti.DemoApplications
         static void Main()
         {
             Application.EnableVisualStyles();
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
             Thread.Sleep(5000); // wegen verzögertem Logging, später besser über FlushBuffers im InfoController lösen.

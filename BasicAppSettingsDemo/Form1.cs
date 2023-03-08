@@ -19,10 +19,12 @@ namespace NetEti.DemoApplications
         public Form1()
         {
             InitializeComponent();
+            this._random = new Random();
+
         }
 
-        private AppSettings _appSettings;
-        private Logger _appLogger;
+        private AppSettings? _appSettings;
+        private Logger? _appLogger;
 
         private string[] _toReplace = new string[]
         {
@@ -72,15 +74,39 @@ namespace NetEti.DemoApplications
                 .RegisterInfoReceiver(this._appLogger, null, InfoTypes.Collection2InfoTypeArray(InfoTypes.All));
 
             this.fillListbox();
+            this.PublishListboxData();
             this._range = this._toReplace.Length;
             this._random = new Random();
         }
 
+        private void PublishListboxData()
+        {
+            foreach (var item in this.listBox1.Items)
+            {
+                this.Publish(item.ToString());
+            }
+        }
+
+        private void Publish(string? message)
+        {
+            if (message != null)
+            {
+                InfoController.Say(message);
+            }
+        }
+
         private void fillListbox()
         {
-
+            if (this._appSettings == null)
+            {
+                throw new ApplicationException("_appSettings ist null!");
+            }
+            if (this._appSettings.DebugInfo == null)
+            {
+                throw new ApplicationException("_appSettings.DebugInfo ist null!");
+            }
             this.listBox1.Items.Clear();
-            this.listBox1.Items.Add("AppConfigUser: " + this._appSettings.AppConfigUser ?? "Nicht gesetzt.");
+            this.listBox1.Items.Add("AppConfigUser: " + (this._appSettings.AppConfigUser ?? "Nicht gesetzt."));
             this.listBox1.Items.Add("AppConfigUserLoaded: " + this._appSettings.AppConfigUserLoaded);
             this.listBox1.Items.Add("TestEinstellung: " + this._appSettings.GetStringValue("TestEinstellung", "Nicht gesetzt."));
             this.listBox1.Items.Add("Applikation-Name: " + this._appSettings.ApplicationName);
@@ -97,7 +123,7 @@ namespace NetEti.DemoApplications
             this.listBox1.Items.Add("IsClickOnce: " + this._appSettings.IsClickOnce.ToString());
             if (this._appSettings.IsClickOnce)
             {
-                this.listBox1.Items.Add("ClickOnceDataDirectory: " + this._appSettings.ClickOnceDataDirectory.ToString());
+                this.listBox1.Items.Add("ClickOnceDataDirectory: " + this._appSettings.ClickOnceDataDirectory?.ToString());
             }
             this.listBox1.Items.Add("Test.ini: " + this._appSettings.TestIniFileName);
             //this.listBox1.Items.Add("DefaultSQLDataDirectory: " + this._appSettings.DefaultSqlDataDirectory);
@@ -153,7 +179,7 @@ namespace NetEti.DemoApplications
 
             foreach (string key in Environment.GetEnvironmentVariables().Keys)
             {
-                string val = Environment.GetEnvironmentVariable(key);
+                string? val = Environment.GetEnvironmentVariable(key);
                 this.listBox1.Items.Add(key + ": " + val);
             }
 
@@ -181,8 +207,8 @@ namespace NetEti.DemoApplications
                 }
                 int ind = this._random.Next(1, this._range) - 1;
 
-                string replaced = _appSettings.ReplaceWildcards(">%" + this._toReplace[ind] + "%<");
-                //string replaced = _appSettings.ReplaceWildcards(">%SOMETESTSTRINGS%<");
+                string? replaced = _appSettings?.ReplaceWildcards(">%" + this._toReplace[ind] + "%<");
+                //string? replaced = _appSettings.ReplaceWildcards(">%SOMETESTSTRINGS%<");
                 //Console.WriteLine(this._toReplace[ind] + ": " + replaced);
                 Thread.Sleep(10);
                 if (i % 100 == 0)
@@ -214,8 +240,8 @@ namespace NetEti.DemoApplications
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            this._appSettings.Dispose();
-            this._appLogger.Dispose();
+            this._appSettings?.Dispose();
+            this._appLogger?.Dispose();
         }
 
         private void button1_Click(object sender, EventArgs e)

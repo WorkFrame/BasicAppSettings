@@ -27,7 +27,7 @@ namespace NetEti.DemoApplications
         #region Properties (alphabetic)
 
         // 12.03.2012 Nagel Testeinträge +
-        public string Harry { get; set; }
+        public string? Harry { get; set; }
 
         /// <summary>
         /// Name und Pfad der test.ini
@@ -54,12 +54,12 @@ namespace NetEti.DemoApplications
         /// </summary>
         /// <param name="inString">Wildcard</param>
         /// <returns>Laufzeit-Ersetzung</returns>
-        public override string ReplaceWildcards(string inString)
+        public override string? ReplaceWildcards(string inString)
         {
             try
             {
                 NetEti.Globals.ThreadLocker.LockNameGlobal("ReplaceWildcards");
-                string replaced = base.ReplaceWildcards(inString);
+                string? replaced = base.ReplaceWildcards(inString);
                 // Regex.Replace(inString, @"%HOME%", AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\'), RegexOptions.IgnoreCase);
                 if (inString.ToUpper().Contains("%SOMETESTSTRINGS%"))
                 {
@@ -80,7 +80,7 @@ namespace NetEti.DemoApplications
         /// <summary>
         /// Implementiert IGetStringValue für Zugriffe auf INI-Files.
         /// </summary>
-        private IniAccess _iniAccessor;
+        private IniAccess? _iniAccessor;
 
         private PropertyAccess _propertyAccessor;
 
@@ -122,7 +122,7 @@ namespace NetEti.DemoApplications
             // 12.03.2012 Nagel Testeinträge -
 
             // 10.01.2017 Nagel Testeinträge +
-            string applicationName = this.GetStringValue("PRODUCTNAME", "");
+            string applicationName = this.GetStringValue("PRODUCTNAME", "") ?? "unknown application";
             for (int i = 0; i < 100; i++)
             {
                 SomeTestStrings.Push(string.Format($"String-100-Zeichen-Laenge ({applicationName})) ").PadRight(97, '-') + String.Format($"{ i:000}"));
