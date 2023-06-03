@@ -80,7 +80,7 @@ namespace NetEti.ApplicationEnvironment
         /// <summary>
         /// Das Verzeichnis, in dem die Applikation gestartet wurde als absoluter Pfad.
         /// </summary>
-        public string? ApplicationRootPath { get; private set; }
+        public string ApplicationRootPath { get; private set; }
 
         /// <summary>
         /// Wenn true, kann immer abgebrochen werden - zu Debug-Zwecken.<br></br>
@@ -141,7 +141,7 @@ namespace NetEti.ApplicationEnvironment
         ///  Filter, der die zu loggenden Zeilen begrenzt.
         ///  Default: "" - alles wird geloggt.
         /// </summary>
-        public string? DebugFileRegexFilter { get; set; }
+        public string DebugFileRegexFilter { get; set; }
 
         /// <summary>
         /// Die zu loggenden Informationsarten<br></br>
@@ -238,18 +238,18 @@ namespace NetEti.ApplicationEnvironment
         /// <summary>
         /// Der Rechnername
         /// </summary>
-        public string? MachineName { get; private set; }
+        public string MachineName { get; private set; }
 
         /// <summary>
         /// Geforderte Mindestversion für spätere Prüfung gegen die ProgrammVersion.<br></br>
         /// Default: "1.0.0.0"
         /// </summary>
-        public string? MinProgrammVersion { get; protected set; }
+        public string MinProgrammVersion { get; protected set; }
 
         /// <summary>
         /// Die komplette Betriebssystem-Version
         /// </summary>
-        public string? OSVersion { get; private set; }
+        public string OSVersion { get; private set; }
 
         /// <summary>
         /// Numerische Haupt-Betriebssystem-Version<br></br>
@@ -265,17 +265,17 @@ namespace NetEti.ApplicationEnvironment
         /// <summary>
         /// Der Prozessortyp
         /// </summary>
-        public string? Processor { get; private set; }
+        public string Processor { get; private set; }
 
         /// <summary>
         /// Die Anzahl Prozessoren
         /// </summary>
-        public string? ProcessorCount { get; private set; }
+        public string ProcessorCount { get; private set; }
 
         /// <summary>
         /// Die aktuelle ProgrammVersion = Application.ProductVersion
         /// </summary>
-        public string? ProgrammVersion { get; private set; }
+        public string ProgrammVersion { get; private set; }
 
         /// <summary>
         /// Basis-Pfad, in dem in der Registry nach einer Einstellung gesucht wird.
@@ -319,7 +319,7 @@ namespace NetEti.ApplicationEnvironment
         ///  Default: "" - alles wird geloggt.
         ///  z.B.: @"(?:_NOPPES_)" - Nichts wird geloggt, bzw. nur Zeilen, die "_NOPPES_" enthalten
         /// </summary>
-        public string? StatisticsFileRegexFilter { get; set; }
+        public string StatisticsFileRegexFilter { get; set; }
 
         /// <summary>
         /// Environment: "TEMP"
@@ -346,7 +346,7 @@ namespace NetEti.ApplicationEnvironment
         {
             get
             {
-                return this._workingDirectory ?? ".";
+                return this._workingDirectory;
             }
             set
             {
@@ -692,40 +692,6 @@ namespace NetEti.ApplicationEnvironment
         }
 
         /// <summary>
-        /// Konstruktor, wird ggf. über Reflection vom externen statischen
-        /// GenericSingletonProvider über GetInstance() aufgerufen.
-        /// Holt alle Infos und stellt sie als Properties zur Verfügung.
-        /// </summary>
-        protected BasicAppSettings()
-        {
-            // this.IsFullFramework = RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework",
-            // StringComparison.OrdinalIgnoreCase);
-            // this.IsNetNative = RuntimeInformation.FrameworkDescription.StartsWith(".NET Native",
-            //     StringComparison.OrdinalIgnoreCase);
-            // this.IsNetCore = RuntimeInformation.FrameworkDescription.StartsWith(".NET Core",
-            //     StringComparison.OrdinalIgnoreCase);
-
-            this.AppEnvAccessor = new AppEnvReader();
-
-            this.CommandLineAccessor = new CommandLineAccess();
-            this.SettingsAccessor = new SettingsAccess();
-            this.EnvAccessor = new EnvAccess();
-            this.RegAccessor = new RegAccess();
-
-            this.AppEnvAccessor.RegisterStringValueGetter(this.CommandLineAccessor);
-            this.AppEnvAccessor.RegisterStringValueGetter(this.SettingsAccessor);
-            this.AppEnvAccessor.RegisterStringValueGetter(this.EnvAccessor);
-            this.AppEnvAccessor.RegisterStringValueGetter(this.RegAccessor);
-
-            this._workingDirectory = ".";
-            this.TempDirectory= ".";
-            this.ApplicationName = "NetEti.BasicAppSettings;";
-            this.DebugFile = this.ApplicationName + ".log";
-
-            this.LoadSettings();
-        }
-
-        /// <summary>
         /// Setzt den Registry-Zugriffskey für alle nachfolgende Zugriffe auf
         /// den übergebenen Basis-Pfad, wenn sich der übergebene registryBasePath
         /// fehlerfrei in ein entsprechendes Equivalent aus Registy-Keys umwandeln lässt.
@@ -798,16 +764,16 @@ namespace NetEti.ApplicationEnvironment
             this.RegistryBasePath = this.AppEnvAccessor.GetStringValue("RegistryBasePath", "");
             this.SingleInstance = Convert.ToBoolean(this.GetStringValue("SingleInstance", "true"),
                                                     System.Globalization.CultureInfo.CurrentCulture);
-            this.MachineName = this.GetStringValue("MACHINENAME", "") ?? "unknown";
+            this.MachineName = this.GetStringValue("MACHINENAME", "") ?? "";
             this.AppEnvAccessor.RegisterKeyValue("MACHINENAME", this.MachineName);
-            this.Processor = this.GetStringValue("PROCESSOR_ARCHITECTURE", "");
-            this.ProcessorCount = this.GetStringValue("PROCESSORCOUNT", "1");
-            this.UserDomainName = this.GetStringValue("USERDOMAINNAME", "");
-            this.UserName = this.GetStringValue("USERNAME", "") ?? "unknown";
+            this.Processor = this.GetStringValue("PROCESSOR_ARCHITECTURE", "") ?? ""; ;
+            this.ProcessorCount = this.GetStringValue("PROCESSORCOUNT", "") ?? "";
+            this.UserDomainName = this.GetStringValue("USERDOMAINNAME", "") ?? "";
+            this.UserName = this.GetStringValue("USERNAME", "") ?? "";
             this.AppEnvAccessor.RegisterKeyValue("USERNAME", this.UserName);
             this.TempDirectory = this.GetStringValue("TEMP", "") ?? "";
             this.AppEnvAccessor.RegisterKeyValue("TempDirectory", this.TempDirectory);
-            this.OSVersion = this.GetStringValue("OSVERSION", "");
+            this.OSVersion = this.GetStringValue("OSVERSION", "") ?? "";
             this.OSVersionMajor = Convert.ToInt16(this.GetStringValue("OSVERSIONMAJOR", "0"), System.Globalization.CultureInfo.CurrentCulture);
             this.ApplicationRootPath = this.GetStringValue("APPLICATIONROOTPATH", "") ?? "";
             this.AppEnvAccessor.RegisterKeyValue("APPLICATIONROOTPATH", this.ApplicationRootPath);
@@ -855,9 +821,10 @@ namespace NetEti.ApplicationEnvironment
             string? debugInfoString = this.GetStringValue("DebugInfo", "ALL");
             this.AppEnvAccessor.RegisterKeyValue("DebugInfo", debugInfoString ?? "ALL");
             this.DebugInfo = InfoTypes.String2InfoTypeArray(debugInfoString ?? "ALL");
-            this.DebugFileRegexFilter = this.GetStringValue("DebugFileRegexFilter", "");
+            this.DebugFileRegexFilter = this.GetStringValue("DebugFileRegexFilter", "") ?? "";
             this.DebugMode = this.GetValue<bool>("DebugMode", false);
-            this.StatisticsFile = this.GetStringValue("StatisticsFile", this.WorkingDirectory + Path.DirectorySeparatorChar + this.ApplicationName + @".stat");
+            this.StatisticsFile
+                = this.GetStringValue("StatisticsFile", this.WorkingDirectory + Path.DirectorySeparatorChar + this.ApplicationName + @".stat");
             try
             {
                 if (File.Exists(this.StatisticsFile))
@@ -867,10 +834,10 @@ namespace NetEti.ApplicationEnvironment
 
             }
             catch { }
-            this.StatisticsFileRegexFilter = this.GetStringValue("StatisticsFileRegexFilter", "");
+            this.StatisticsFileRegexFilter = this.GetStringValue("StatisticsFileRegexFilter", "") ?? "";
             this.BreakAlwaysAllowed = Convert.ToBoolean(this.GetStringValue("BreakAlwaysAllowed", "false"),
                                                         System.Globalization.CultureInfo.CurrentCulture);
-            this.ProgrammVersion = this.GetStringValue("PROGRAMVERSION", "1.0.0.0");
+            this.ProgrammVersion = this.GetStringValue("PROGRAMVERSION", "1.0.0.0") ?? "1.0.0.0";
             this.MinProgrammVersion = "1.0.0.0"; // muss ggf. in einer abgeleiteten Klasse überschrieben werden
             this.CheckVersion = Convert.ToBoolean(this.GetStringValue("CheckVersion", "true"),
                                                   System.Globalization.CultureInfo.CurrentCulture);
@@ -892,9 +859,9 @@ namespace NetEti.ApplicationEnvironment
         /// </summary>
         /// <param name="inString">Wildcard</param>
         /// <returns>Laufzeit-Ersetzung</returns>
-        public virtual string? ReplaceWildcards(string inString)
+        public virtual string ReplaceWildcards(string inString)
         {
-            return this.GetStringValue("__NOPPES__", inString);
+            return this.GetStringValue("__NOPPES__", inString) ?? inString;
         }
 
         /// <summary>
@@ -906,6 +873,56 @@ namespace NetEti.ApplicationEnvironment
         #endregion public members
 
         #region protected members
+
+        /// <summary>
+        /// Konstruktor, wird ggf. über Reflection vom externen statischen
+        /// GenericSingletonProvider über GetInstance() aufgerufen.
+        /// Holt alle Infos und stellt sie als Properties zur Verfügung.
+        /// </summary>
+        protected BasicAppSettings()
+        {
+            this.DebugFileRegexFilter = String.Empty;
+            this.StatisticsFileRegexFilter = String.Empty;
+            this.MachineName = String.Empty;
+            this.MinProgrammVersion = String.Empty;
+            this.ProgrammVersion = String.Empty;
+            this.OSVersion = String.Empty;
+            this.Processor = String.Empty;
+            this.ProcessorCount = String.Empty;
+
+            // this.IsFullFramework = RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework",
+            // StringComparison.OrdinalIgnoreCase);
+            // this.IsNetNative = RuntimeInformation.FrameworkDescription.StartsWith(".NET Native",
+            //     StringComparison.OrdinalIgnoreCase);
+            // this.IsNetCore = RuntimeInformation.FrameworkDescription.StartsWith(".NET Core",
+            //     StringComparison.OrdinalIgnoreCase);
+
+            this.AppEnvAccessor = new AppEnvReader();
+
+            this.CommandLineAccessor = new CommandLineAccess();
+            this.SettingsAccessor = new SettingsAccess();
+            this.EnvAccessor = new EnvAccess();
+            // IniAccessor und PropertyAccessor werden hier nicht genutzt, aber mit null
+            // vor-initialisiert, damit die zugehörigen NuGet-Packages dem Package
+            // NetEti.BasicAppSettings.<Version>.nupkg als Referenzen hinzugefügt werden.
+            // Ohne diese Vor-Initialisierung werden die Packages wegoptimiert.
+            this.IniAccessor = null;
+            this.PropertyAccessor = null;
+            this.RegAccessor = new RegAccess();
+
+            this.AppEnvAccessor.RegisterStringValueGetter(this.CommandLineAccessor);
+            this.AppEnvAccessor.RegisterStringValueGetter(this.SettingsAccessor);
+            this.AppEnvAccessor.RegisterStringValueGetter(this.EnvAccessor);
+            this.AppEnvAccessor.RegisterStringValueGetter(this.RegAccessor);
+
+            this._workingDirectory = ".";
+            this.TempDirectory = ".";
+            this.ApplicationRootPath = ".";
+            this.ApplicationName = "NetEti.BasicAppSettings;";
+            this.DebugFile = this.ApplicationName + ".log";
+
+            this.LoadSettings();
+        }
 
         /// <summary>
         /// Implementiert IGetStringValue für Zugriffe auf die Kommandozeile.
@@ -928,9 +945,19 @@ namespace NetEti.ApplicationEnvironment
         protected EnvAccess EnvAccessor { get; private set; }
 
         /// <summary>
+        /// Implementiert IGetStringValue für Zugriffe auf INI-Dateien.
+        /// </summary>
+        protected IniAccess? IniAccessor { get; private set; }
+
+        /// <summary>
         /// Implementiert IGetStringValue für Zugriffe auf die Registry.
         /// </summary>
         protected RegAccess RegAccessor { get; private set; }
+
+        /// <summary>
+        /// Implementiert IGetStringValue für Zugriffe auf public Properties der AppSettings.
+        /// </summary>
+        protected PropertyAccess? PropertyAccessor { get; private set; }
 
         /// <summary>
         /// Enthält den Pfad des untersten Verzeichnisses, das beim letzten

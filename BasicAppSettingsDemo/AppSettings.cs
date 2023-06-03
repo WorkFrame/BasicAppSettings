@@ -54,7 +54,7 @@ namespace NetEti.DemoApplications
         /// </summary>
         /// <param name="inString">Wildcard</param>
         /// <returns>Laufzeit-Ersetzung</returns>
-        public override string? ReplaceWildcards(string inString)
+        public override string ReplaceWildcards(string inString)
         {
             try
             {
@@ -115,7 +115,7 @@ namespace NetEti.DemoApplications
 
             // Checken, ob in test.ini eine Mindest-Version gesetzt wurde;
             // überschreibt den Default aus BasicAppSettings
-            this.MinProgrammVersion = this.GetStringValue("Info" + Global.SaveColumnDelimiter + "MyApplicationMindestVersionProg", "1.0.0.0");
+            this.MinProgrammVersion = this.GetStringValue("Info" + Global.SaveColumnDelimiter + "MyApplicationMindestVersionProg", "1.0.0.0") ?? "1.0.0.0";
 
             // 12.03.2012 Nagel Testeinträge +
             this.Harry = this.GetStringValue("Harry", "noppes");
