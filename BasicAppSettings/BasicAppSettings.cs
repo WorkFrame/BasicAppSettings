@@ -846,7 +846,8 @@ namespace NetEti.ApplicationEnvironment
 
             this.SetDefaultSQLDirectories();
             this.DataSource = this.GetStringValue("DataSource", null);
-            this.AppEnvAccessor.RegisterKeyValue("DataSource", this.DataSource ?? "unknown");
+            // this.AppEnvAccessor.RegisterKeyValue("DataSource", this.DataSource ?? "unknown");
+            this.AppEnvAccessor.RegisterKeyValue("DataSource", this.DataSource);
             this.DefaultDatabase = null;
             this.LogSql = Convert.ToBoolean(this.GetStringValue("LogSQL", "false"), System.Globalization.CultureInfo.CurrentCulture);
             this.AppEnvAccessor.RegisterKeyValue("LogSql", this.LogSql.ToString());
