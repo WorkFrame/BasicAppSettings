@@ -1,9 +1,6 @@
 ﻿using NetEti.Globals;
 using NetEti.ApplicationEnvironment;
 using NetEti.FileTools;
-using System.Collections.Generic;
-using System;
-using System.IO;
 
 namespace NetEti.DemoApplications
 {

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Windows.Forms;
-using NetEti.ApplicationControl;
+﻿using NetEti.ApplicationControl;
 using NetEti.Globals;
-using System.Threading;
 using System.Text.RegularExpressions;
-using System.IO;
 
 namespace NetEti.DemoApplications
 {
