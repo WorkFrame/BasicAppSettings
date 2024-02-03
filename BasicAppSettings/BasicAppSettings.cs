@@ -203,6 +203,12 @@ namespace NetEti.ApplicationEnvironment
 
         //using System.Runtime.InteropServices;
         /// <summary>
+        /// True, wenn die Anwendung auf .Net-Framework basiert.
+        /// </summary>
+        public bool IsFrameworkAssembly { get; private set; }
+
+        //using System.Runtime.InteropServices;
+        /// <summary>
         /// True, wenn die Anwendung auf einem vollständigen .Net-Framework basiert.
         /// </summary>
         public bool IsFullFramework { get; private set; }
@@ -895,7 +901,9 @@ namespace NetEti.ApplicationEnvironment
             // StringComparison.OrdinalIgnoreCase);
             // this.IsNetNative = RuntimeInformation.FrameworkDescription.StartsWith(".NET Native",
             //     StringComparison.OrdinalIgnoreCase);
-            // this.IsNetCore = RuntimeInformation.FrameworkDescription.StartsWith(".NET Core",
+            // this.
+            //
+            // IsNetCore = RuntimeInformation.FrameworkDescription.StartsWith(".NET Core",
             //     StringComparison.OrdinalIgnoreCase);
 
             this.AppEnvAccessor = new AppEnvReader();
@@ -912,10 +920,13 @@ namespace NetEti.ApplicationEnvironment
             this.RegAccessor = new RegAccess();
 
             this.AppEnvAccessor.RegisterStringValueGetter(this.CommandLineAccessor);
+            AppSettingsRegistry.RememberParameterSource("CommandLine", "CommandLine", this.CommandLineAccessor.CommandLine ?? "''");
             this.AppEnvAccessor.RegisterStringValueGetter(this.SettingsAccessor);
             this.AppEnvAccessor.RegisterStringValueGetter(this.EnvAccessor);
             this.AppEnvAccessor.RegisterStringValueGetter(this.RegAccessor);
 
+            this.IsFrameworkAssembly = this.GetValue<bool>("IsFrameworkAssembly", false);
+            this.AppEnvAccessor.RegisterKeyValue("IsFrameworkAssembly", this.IsFrameworkAssembly);
             this._workingDirectory = ".";
             this.TempDirectory = ".";
             this.ApplicationRootPath = ".";
