@@ -224,6 +224,18 @@ namespace NetEti.ApplicationEnvironment
         public bool IsNetNative { get; private set; }
 
         /// <summary>
+        /// Bei True sollen alle Child-Prozesse der Anwendung am Programmende
+        /// nach einer gewissen Wartezeit rekursiv terminiert werden.
+        /// Achtung:
+        ///     BasicAppSettings stellt nur die Property zur Verfügung.
+        ///     Um das Beenden der Prozesse muss sich die jeweilige Anwendung
+        ///     über Einbindung von NetEti.ProcessTools und Aufruf von
+        ///     ProcessWorker.FinishChildProcesses() selbst kümmern.
+        /// Default: false.
+        /// </summary>
+        public bool KillChildProcessesOnApplicationExit { get; set; }
+
+        /// <summary>
         /// Bei True wird das WorkingDirectory am Programmende entfernt.
         /// Sollte aus Sicherheitsgründen nur erfolgen, wenn es beim
         /// Programmstart auch erzeugt wurde.
@@ -310,7 +322,7 @@ namespace NetEti.ApplicationEnvironment
 
         /// <summary>
         /// Bei true kann die Applikation nur einmal gestartet werden.<br></br>
-        /// Default: true<br></br>
+        /// Default: false<br></br>
         /// </summary>
         public bool SingleInstance { get; private set; }
 
@@ -425,45 +437,6 @@ namespace NetEti.ApplicationEnvironment
                     this._workingDirectory = value; // damit überhaupt was drin steht.
                 }
             }
-        }
-
-        /// <summary>
-        /// Erstellt einen kompletten Verzeichnispfad, wenn dieser oder ein Teil
-        /// davon nicht existiert. Retourniert den Teil des Verzeichnispfades,
-        /// der bis inklusive zum ersten der neu angelegten Verzeichnisse geht oder null.
-        /// Das Ergebnis dieser Routine kann dafür genutzt werden, genau den Teil
-        /// eines Verzeichnispfades auch wieder zu löschen, der neu angelegt wurde.
-        /// </summary>
-        /// <param name="directoryToCreate">Pfad des anzulegenden Verzeichnisses</param>
-        /// <returns>Verzeichnispfad bis inklusive zum ersten neu angelegten Verzeichnis.</returns>
-        /// <exception cref="IOException" />
-        /// <exception cref="UnauthorizedAccessException" />
-        /// <exception cref="ArgumentException" />
-        /// <exception cref="ArgumentNullException" />
-        /// <exception cref="PathTooLongException" />
-        /// <exception cref="DirectoryNotFoundException" />
-        /// <exception cref="NotSupportedException" />
-        protected string? DirectoryCreate(string directoryToCreate)
-        {
-            string? createdDirectoryRoot = null;
-            if (!Directory.Exists(directoryToCreate))
-            {
-            	  createdDirectoryRoot = directoryToCreate;
-                while (createdDirectoryRoot != null && !Directory.Exists(Path.GetDirectoryName(createdDirectoryRoot)))
-                {
-                    createdDirectoryRoot = Path.GetDirectoryName(createdDirectoryRoot);
-                }
-                if (createdDirectoryRoot != null)
-                {
-                    Directory.CreateDirectory(directoryToCreate);
-                }
-                else
-                {
-                    throw new ArgumentException(String.Format(
-                        $"Das Verzeichnis {directoryToCreate} konnte nicht angelegt werden!"));
-                }
-            }
-            return createdDirectoryRoot;
         }
 
         /// <summary>
@@ -768,11 +741,11 @@ namespace NetEti.ApplicationEnvironment
                 this.AppConfigUserInfo = "Es wurde keine AppConfigUser konfiguriert.";
             }
             this.RegistryBasePath = this.AppEnvAccessor.GetStringValue("RegistryBasePath", "");
-            this.SingleInstance = Convert.ToBoolean(this.GetStringValue("SingleInstance", "true"),
+            this.SingleInstance = Convert.ToBoolean(this.GetStringValue("SingleInstance", "false"),
                                                     System.Globalization.CultureInfo.CurrentCulture);
             this.MachineName = this.GetStringValue("MACHINENAME", "") ?? "";
             this.AppEnvAccessor.RegisterKeyValue("MACHINENAME", this.MachineName);
-            this.Processor = this.GetStringValue("PROCESSOR_ARCHITECTURE", "") ?? ""; ;
+            this.Processor = this.GetStringValue("PROCESSOR_ARCHITECTURE", "") ?? "";
             this.ProcessorCount = this.GetStringValue("PROCESSORCOUNT", "") ?? "";
             this.UserDomainName = this.GetStringValue("USERDOMAINNAME", "") ?? "";
             this.UserName = this.GetStringValue("USERNAME", "") ?? "";
@@ -813,7 +786,8 @@ namespace NetEti.ApplicationEnvironment
                 this.WorkingDirectory = newWorkingDirectory;
             }
             this.AppEnvAccessor.RegisterKeyValue("WorkingDirectory", this.WorkingDirectory);
-            this.KillWorkingDirectoryAtShutdown = Convert.ToBoolean(this.GetStringValue("KillWorkingDirectoryAtShutdown", "true"));
+            this.KillWorkingDirectoryAtShutdown = Convert.ToBoolean(this.GetStringValue("KillWorkingDirectoryAtShutdown", "false"));
+            this.KillChildProcessesOnApplicationExit = Convert.ToBoolean(this.GetStringValue("KillChildProcessesOnApplicationExit", "false"));
             this.SearchDirectory = this.GetStringValue("SearchDirectory", this.WorkingDirectory)?.TrimEnd(Path.DirectorySeparatorChar);
             string? newDebugFile
                 = this.GetStringValue("DebugFile", this.WorkingDirectory + Path.DirectorySeparatorChar + this.ApplicationName + @".log");
@@ -855,7 +829,7 @@ namespace NetEti.ApplicationEnvironment
             // this.AppEnvAccessor.RegisterKeyValue("DataSource", this.DataSource ?? "unknown");
             this.AppEnvAccessor.RegisterKeyValue("DataSource", this.DataSource);
             this.DefaultDatabase = null;
-            this.LogSql = Convert.ToBoolean(this.GetStringValue("LogSQL", "false"), System.Globalization.CultureInfo.CurrentCulture);
+            this.LogSql = Convert.ToBoolean(this.GetStringValue("LogSql", "false"), System.Globalization.CultureInfo.CurrentCulture);
             this.AppEnvAccessor.RegisterKeyValue("LogSql", this.LogSql.ToString());
         }
 
@@ -977,6 +951,45 @@ namespace NetEti.ApplicationEnvironment
         /// Dieser 
         /// </summary>
         protected string? CreatedDirectoryRoot { get; set; }
+
+        /// <summary>
+        /// Erstellt einen kompletten Verzeichnispfad, wenn dieser oder ein Teil
+        /// davon nicht existiert. Retourniert den Teil des Verzeichnispfades,
+        /// der bis inklusive zum ersten der neu angelegten Verzeichnisse geht oder null.
+        /// Das Ergebnis dieser Routine kann dafür genutzt werden, genau den Teil
+        /// eines Verzeichnispfades auch wieder zu löschen, der neu angelegt wurde.
+        /// </summary>
+        /// <param name="directoryToCreate">Pfad des anzulegenden Verzeichnisses</param>
+        /// <returns>Verzeichnispfad bis inklusive zum ersten neu angelegten Verzeichnis.</returns>
+        /// <exception cref="IOException" />
+        /// <exception cref="UnauthorizedAccessException" />
+        /// <exception cref="ArgumentException" />
+        /// <exception cref="ArgumentNullException" />
+        /// <exception cref="PathTooLongException" />
+        /// <exception cref="DirectoryNotFoundException" />
+        /// <exception cref="NotSupportedException" />
+        protected string? DirectoryCreate(string directoryToCreate)
+        {
+            string? createdDirectoryRoot = null;
+            if (!Directory.Exists(directoryToCreate))
+            {
+                createdDirectoryRoot = directoryToCreate;
+                while (createdDirectoryRoot != null && !Directory.Exists(Path.GetDirectoryName(createdDirectoryRoot)))
+                {
+                    createdDirectoryRoot = Path.GetDirectoryName(createdDirectoryRoot);
+                }
+                if (createdDirectoryRoot != null)
+                {
+                    Directory.CreateDirectory(directoryToCreate);
+                }
+                else
+                {
+                    throw new ArgumentException(String.Format(
+                        $"Das Verzeichnis {directoryToCreate} konnte nicht angelegt werden!"));
+                }
+            }
+            return createdDirectoryRoot;
+        }
 
         /// <summary>
         /// Setzt die Default-Verzeichnisse für den Microsoft SQL Server.

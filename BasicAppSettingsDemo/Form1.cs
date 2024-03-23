@@ -171,6 +171,9 @@ namespace NetEti.DemoApplications
             this.listBox1.Items.Add("UserInteractive: " + this._appSettings.GetStringValue("USERINTERACTIVE", ""));
             this.listBox1.Items.Add("UserName: " + this._appSettings.GetStringValue("USERNAME", ""));
             this.listBox1.Items.Add("Version: " + this._appSettings.GetStringValue("VERSION", ""));
+            this.listBox1.Items.Add("KillWorkingDirectoryAtShutdown: " + this._appSettings.KillWorkingDirectoryAtShutdown.ToString());
+            this.listBox1.Items.Add("DumpAppSettings: " + this._appSettings.DumpAppSettings.ToString());
+            this.listBox1.Items.Add("DumpLoadedAssemblies: " + this._appSettings.DumpLoadedAssemblies.ToString());
             this.listBox1.Items.Add("WorkingSet: " + this._appSettings.GetStringValue("WORKINGSET", ""));
 
             foreach (string key in Environment.GetEnvironmentVariables().Keys)
