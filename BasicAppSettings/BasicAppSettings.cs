@@ -2,6 +2,7 @@
 using NetEti.FileTools;
 using NetEti.Globals;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 
 namespace NetEti.ApplicationEnvironment
@@ -48,6 +49,7 @@ namespace NetEti.ApplicationEnvironment
     /// 15.10.2017 Erik Nagel: RegistryBasePath eingeführt.<br></br>
     /// 09.03.2019 Erik Nagel: DumpAppSettings und DumpLoadedAssemblies eingeführt.<br></br>
     /// 05.04.2020 Erik Nagel: .NetCore-fähig gemacht; Newtosoft.json integriert; Version 4.6.1.<br></br>
+    /// 19.12.2024 Erik Nagel: Language implementiert; Version auf 8.0.1.0.<br></br>
     /// </remarks>
     public class BasicAppSettings : IGetStringValue, IGetValue, IDisposable
     {
@@ -245,6 +247,11 @@ namespace NetEti.ApplicationEnvironment
         /// Default: true.
         /// </summary>
         public bool KillWorkingDirectoryAtShutdown { get; set; }
+
+        /// <summary>
+        /// Die UI-Sprache (Systemsprache).
+        /// </summary>
+        public string Language { get; private set; }
 
         /// <summary>
         /// Wenn true, soll jeder Sql-Befehl in's Logfile geschrieben werden.
@@ -742,7 +749,8 @@ namespace NetEti.ApplicationEnvironment
             }
             this.RegistryBasePath = this.AppEnvAccessor.GetStringValue("RegistryBasePath", "");
             this.SingleInstance = Convert.ToBoolean(this.GetStringValue("SingleInstance", "false"),
-                                                    System.Globalization.CultureInfo.CurrentCulture);
+                                                    CultureInfo.CurrentCulture);
+            this.Language = this.GetStringValue("Language", CultureInfo.CurrentUICulture.Name) ?? "";
             this.MachineName = this.GetStringValue("MACHINENAME", "") ?? "";
             this.AppEnvAccessor.RegisterKeyValue("MACHINENAME", this.MachineName);
             this.Processor = this.GetStringValue("PROCESSOR_ARCHITECTURE", "") ?? "";
@@ -753,7 +761,7 @@ namespace NetEti.ApplicationEnvironment
             this.TempDirectory = this.GetStringValue("TEMP", "") ?? "";
             this.AppEnvAccessor.RegisterKeyValue("TempDirectory", this.TempDirectory);
             this.OSVersion = this.GetStringValue("OSVERSION", "") ?? "";
-            this.OSVersionMajor = Convert.ToInt16(this.GetStringValue("OSVERSIONMAJOR", "0"), System.Globalization.CultureInfo.CurrentCulture);
+            this.OSVersionMajor = Convert.ToInt16(this.GetStringValue("OSVERSIONMAJOR", "0"), CultureInfo.CurrentCulture);
             this.ApplicationRootPath = this.GetStringValue("APPLICATIONROOTPATH", "") ?? "";
             this.AppEnvAccessor.RegisterKeyValue("APPLICATIONROOTPATH", this.ApplicationRootPath);
             this.AppEnvAccessor.RegisterKeyValue("HOME", this.ApplicationRootPath);
@@ -764,7 +772,7 @@ namespace NetEti.ApplicationEnvironment
             {
                 this.AppEnvAccessor.RegisterKeyValue("ClickOnceDataDirectory", this.ClickOnceDataDirectory);
             }
-            this.FrameworkVersionMajor = Convert.ToInt16(this.GetStringValue("FRAMEWORKVERSIONMAJOR", ""), System.Globalization.CultureInfo.CurrentCulture);
+            this.FrameworkVersionMajor = Convert.ToInt16(this.GetStringValue("FRAMEWORKVERSIONMAJOR", ""), CultureInfo.CurrentCulture);
             this.ProcessId = Process.GetCurrentProcess().Id;
             this.AppEnvAccessor.RegisterKeyValue("ProcessId", this.ProcessId.ToString());
             this.CreateWorkingDirectoryIfNotExists = Convert.ToBoolean(this.GetStringValue("CreateWorkingDirectoryIfNotExists", "true"));
@@ -816,11 +824,11 @@ namespace NetEti.ApplicationEnvironment
             catch { }
             this.StatisticsFileRegexFilter = this.GetStringValue("StatisticsFileRegexFilter", "") ?? "";
             this.BreakAlwaysAllowed = Convert.ToBoolean(this.GetStringValue("BreakAlwaysAllowed", "false"),
-                                                        System.Globalization.CultureInfo.CurrentCulture);
+                                                        CultureInfo.CurrentCulture);
             this.ProgrammVersion = this.GetStringValue("PROGRAMVERSION", "1.0.0.0") ?? "1.0.0.0";
             this.MinProgrammVersion = "1.0.0.0"; // muss ggf. in einer abgeleiteten Klasse überschrieben werden
             this.CheckVersion = Convert.ToBoolean(this.GetStringValue("CheckVersion", "true"),
-                                                  System.Globalization.CultureInfo.CurrentCulture);
+                                                  CultureInfo.CurrentCulture);
             this.DumpAppSettings = this.GetValue<bool>("DumpAppSettings", false);
             this.DumpLoadedAssemblies = this.GetValue<bool>("DumpLoadedAssemblies", false);
 
@@ -829,7 +837,7 @@ namespace NetEti.ApplicationEnvironment
             // this.AppEnvAccessor.RegisterKeyValue("DataSource", this.DataSource ?? "unknown");
             this.AppEnvAccessor.RegisterKeyValue("DataSource", this.DataSource);
             this.DefaultDatabase = null;
-            this.LogSql = Convert.ToBoolean(this.GetStringValue("LogSql", "false"), System.Globalization.CultureInfo.CurrentCulture);
+            this.LogSql = Convert.ToBoolean(this.GetStringValue("LogSql", "false"), CultureInfo.CurrentCulture);
             this.AppEnvAccessor.RegisterKeyValue("LogSql", this.LogSql.ToString());
         }
 
@@ -862,6 +870,7 @@ namespace NetEti.ApplicationEnvironment
         /// </summary>
         protected BasicAppSettings()
         {
+            this.Language = String.Empty;
             this.DebugFileRegexFilter = String.Empty;
             this.StatisticsFileRegexFilter = String.Empty;
             this.MachineName = String.Empty;
