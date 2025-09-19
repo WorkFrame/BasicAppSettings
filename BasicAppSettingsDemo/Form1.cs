@@ -175,6 +175,8 @@ namespace NetEti.DemoApplications
             this.listBox1.Items.Add("DumpAppSettings: " + this._appSettings.DumpAppSettings.ToString());
             this.listBox1.Items.Add("DumpLoadedAssemblies: " + this._appSettings.DumpLoadedAssemblies.ToString());
             this.listBox1.Items.Add("WorkingSet: " + this._appSettings.GetStringValue("WORKINGSET", ""));
+            this.listBox1.Items.Add("UserParameterReaderPath: " + this._appSettings.GetStringValue("UserParameterReaderPath", ""));
+            this.listBox1.Items.Add("PreferredJobDescriptionFormat: " + this._appSettings.GetStringValue("PreferredJobDescriptionFormat", ""));
 
             foreach (string key in Environment.GetEnvironmentVariables().Keys)
             {

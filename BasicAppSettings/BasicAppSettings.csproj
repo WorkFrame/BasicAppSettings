@@ -52,8 +52,8 @@
 		    <Reference Include="NetEti.SettingsAccess">
 		      <HintPath>$(AssemblyRoot)/NetEti.SettingsAccess.dll</HintPath>
 		    </Reference>
-		    <Reference Include="NetEti.XMLAccess">
-		      <HintPath>$(AssemblyRoot)/NetEti.XMLAccess.dll</HintPath>
+		    <Reference Include="NetEti.UserSettingsAccess">
+		      <HintPath>$(AssemblyRoot)/NetEti.UserSettingsAccess.dll</HintPath>
 		    </Reference>
 		  </ItemGroup>
   	</When>
@@ -68,7 +68,7 @@
 		    <PackageReference Include="NetEti.PropertyAccess" Version="1.0.0" />
 		    <PackageReference Include="NetEti.RegAccess" Version="1.0.0" />
 		    <PackageReference Include="NetEti.SettingsAccess" Version="1.0.0" />
-		    <PackageReference Include="NetEti.XMLAccess" Version="1.0.0" />
+		    <PackageReference Include="NetEti.UserSettingsAccess" Version="1.0.0" />
 		  </ItemGroup>
     </Otherwise>
 	</Choose>
